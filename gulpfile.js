@@ -4,13 +4,13 @@ var browserSync = require('browser-sync').create();
 var pug = require('gulp-pug');
 
 var distFolder = 'dist';
-var destination = [{
+var destination = {
     'main': distFolder,
     'style': distFolder + '/css'
-}]
+}
 
 gulp.task('hello', function() {
-    console.log(destination[0]['main']);
+    console.log(destination['main']);
 });
 gulp.task('browserSync', function() {
     browserSync.init({
@@ -23,7 +23,7 @@ gulp.task('browserSync', function() {
 gulp.task('sass', function() {
     return gulp.src('app/scss/**/*.scss') // source files
         .pipe(sass())
-        .pipe(gulp.dest(destination[0]['style'])) // destination
+        .pipe(gulp.dest(destination['style'])) // destination
         .pipe(browserSync.reload({
             stream: true
         }))
@@ -34,7 +34,7 @@ gulp.task('pug', function() {
         .pipe(pug({
             pretty: boolean = true
         }))
-        .pipe(gulp.dest(destination[0]['main'])) // destination
+        .pipe(gulp.dest(destination['main'])) // destination
         .pipe(browserSync.reload({
             stream: true
         }))

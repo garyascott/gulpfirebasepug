@@ -1,9 +1,26 @@
-html
-    head
-        title first go
-        link(href='css/style.css' rel='stylesheet' type='text/css')
+extends ./templates/layout.pug
 
-    body
-        h1 pug to html f.
-        p  michael
+block content
+    h1 pug to html f.
+    p  michael
+    - var user = { description: '' }
+    - var authorised = true
+    #user
+        if user.description
+            h2.green Description
+            p.description= user.description
+        else if authorised
+            h2.blue Description
+            p.description.
+             User is authorised but has no description, why not add one...
+        else
+            h2.red Description
+            p.description User has no description
+            p User is not authorised.
+
+    -  var list = ["Uno", "Dos", "Tres", "Cuatro", "Cinco", "Seis"]
+    each item in list
+        ul
+            li= item
+    
         
