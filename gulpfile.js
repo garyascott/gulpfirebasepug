@@ -2,11 +2,13 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var browserSync = require('browser-sync').create();
 var pug = require('gulp-pug');
+var minify = require('gulp-minify');
 
 var distFolder = 'dist';
 var destination = {
     'main': distFolder,
-    'style': distFolder + '/css'
+    'style': distFolder + '/css',
+    'js': distFolder + '/scripts'
 }
 
 gulp.task('hello', function() {
@@ -40,7 +42,14 @@ gulp.task('pug', function() {
         }))
 });
 
-gulp.task('watch', ['browserSync', 'sass', 'pug'], function() {
+gulp.task('compress', function() {
+    return gulp.src('app/scripts/**/*.js')
+        .pipe(minify())
+        .pipe(gulp.dest(destination['js']))
+});
+
+gulp.task('watch', ['browserSync', 'sass', 'pug', 'compress'], function() {
     gulp.watch('app/scss/**/*.scss', ['sass']);
     gulp.watch('app/**/*.pug', ['pug']);
+    gulp.watch('app/scripts/**/*.js', ['compress']);
 })
