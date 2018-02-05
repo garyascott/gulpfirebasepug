@@ -1,5 +1,6 @@
 "use strict";
 var gulp = require('gulp');
+
 var sass = require('gulp-sass');
 var browserSync = require('browser-sync').create();
 var pug = require('gulp-pug');
@@ -11,6 +12,10 @@ var source = require('vinyl-source-stream');
 var tsify = require("tsify");
 var gutil = require('gulp-util');
 var watchify = require('watchify');
+
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
+var buffer = require('vinyl-buffer');
 
 var paths = {
     pages: ['app/*.html']
@@ -42,9 +47,12 @@ function bundle() {
     return watchedBrowserify
         .bundle()
         .pipe(source('bundle.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./app'))
         .pipe(gulp.dest(destination.js))
 }
-
 
 gulp.task('default', ['copy-html'], bundle);
 watchedBrowserify.on("update", bundle);
