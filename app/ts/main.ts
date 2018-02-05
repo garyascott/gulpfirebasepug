@@ -1,6 +1,8 @@
-// allowing me to use jquery
-import * as $ from 'jquery'
+import { sayHello } from "./greet";
 
+let showHello = (divName: string, name: string) =>{
+    const elt = document.getElementById(divName);
+    elt.innerText = sayHello(name);
+}
 
-let red: string = 'why 1';
-console.log(red);
+showHello("greeting","Typescript Scott winner");

@@ -3,9 +3,18 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var browserSync = require('browser-sync').create();
 var pug = require('gulp-pug');
-var minify = require('gulp-minify');
 var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
+
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
+var tsify = require("tsify");
+var gutil = require('gulp-util');
+var watchify = require('watchify');
+
+var paths = {
+    pages: ['app/*.html']
+};
 
 var distFolder = 'dist';
 var app = 'app';
@@ -16,15 +25,37 @@ var destination = {
     'appjs': app + '/scripts/'
 
 };
+var watchedBrowserify = watchify(browserify({
+    baseDir: './app',
+    debug: true,
+    entries: ['app/ts/main.ts'],
+    cache: {},
+    packageCache: {}
+}).plugin(tsify));
 
-gulp.task('hello', function() {
-    console.log(destination.main);
+gulp.task('copy-html', function() { //just copying html and adding them to the dest folder
+    return gulp.src(paths.pages)
+        .pipe(gulp.dest(distFolder))
 });
 
+function bundle() {
+    return watchedBrowserify
+        .bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest(destination.js))
+}
+
+
+gulp.task('default', ['copy-html'], bundle);
+watchedBrowserify.on("update", bundle);
+watchedBrowserify.on("log", gutil.log);
+
+
+///before hand
 gulp.task('typescript', function() {
     return tsProject.src()
         .pipe(tsProject())
-        .pipe(gulp.dest(destination.appjs))
+        .pipe(gulp.dest(destination.js))
 });
 gulp.task('browserSync', function() {
     browserSync.init({
@@ -46,7 +77,7 @@ gulp.task('sass', function() {
 gulp.task('pug', function() {
     return gulp.src('app/**/*.pug')
         .pipe(pug({
-            pretty: boolean = true
+            pretty: true
         }))
         .pipe(gulp.dest(destination.main)) // destination
         .pipe(browserSync.reload({
@@ -54,17 +85,11 @@ gulp.task('pug', function() {
         }));
 });
 
-gulp.task('compress', function() {
-    return gulp.src('app/scripts/**/*.js')
-        .pipe(minify())
-        .pipe(gulp.dest(destination.js));
-});
 
-gulp.task('watch', ['browserSync', 'sass', 'pug', 'compress', 'typescript'], function() {
+gulp.task('watch', ['browserSync', 'sass', 'pug', 'typescript'], function() {
     gulp.watch('app/scss/**/*.scss', ['sass']);
     gulp.watch('app/**/*.pug', ['pug']);
-    gulp.watch('app/scripts/**/*.js', ['compress']);
     gulp.watch('app/ts/**/*.ts', ['typescript']);
 });
 
-gulp.task('default', ['watch']);
+// gulp.task('default', ['watch']);

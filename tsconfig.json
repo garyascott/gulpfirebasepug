@@ -1,6 +1,7 @@
 {
     "files": [
-        "app/ts/**/*.ts"
+        "app/ts/main.ts",
+        "app/ts/greet.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
