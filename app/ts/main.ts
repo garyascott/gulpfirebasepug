@@ -5,4 +5,4 @@ let showHello = (divName: string, name: string) =>{
     elt.innerText = sayHello(name);
 }
 
-showHello("greeting","Typescript Scott winner");
+showHello("greeting","Typescript");

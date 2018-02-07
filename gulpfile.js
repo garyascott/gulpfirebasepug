@@ -7,15 +7,15 @@ var pug = require('gulp-pug');
 var ts = require('gulp-typescript');
 var tsProject = ts.createProject('tsconfig.json');
 
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var tsify = require("tsify");
-var gutil = require('gulp-util');
-var watchify = require('watchify');
+var browserify = require('browserify'); //Browserify bundles all our modules into one JavaScript file
+var source = require('vinyl-source-stream'); //vinyl-source-stream lets us adapt the file output of Browserify back into a format that gulp understands called vinyl
+var tsify = require('tsify'); //tsify is a Browserify plugin that, like gulp-typescript, gives access to the TypeScript compiler
 
-var uglify = require('gulp-uglify');
+var uglify = require('gulp-uglify'); // this is for compressing js
+// vinyl-buffer and gulp-sourcemaps to keep sourcemaps working
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
+
 
 var paths = {
     pages: ['app/*.html']
@@ -26,51 +26,53 @@ var app = 'app';
 var destination = {
     'main': distFolder,
     'style': distFolder + '/css',
-    'js': distFolder + '/scripts',
-    'appjs': app + '/scripts/'
+    'js': distFolder + '/scripts'
 
 };
-var watchedBrowserify = watchify(browserify({
-    baseDir: './app',
-    debug: true,
-    entries: ['app/ts/main.ts'],
-    cache: {},
-    packageCache: {}
-}).plugin(tsify));
 
 gulp.task('copy-html', function() { //just copying html and adding them to the dest folder
     return gulp.src(paths.pages)
         .pipe(gulp.dest(distFolder))
 });
 
-function bundle() {
-    return watchedBrowserify
-        .bundle()
-        .pipe(source('bundle.js'))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./app'))
-        .pipe(gulp.dest(destination.js))
-}
 
-gulp.task('default', ['copy-html'], bundle);
-watchedBrowserify.on("update", bundle);
-watchedBrowserify.on("log", gutil.log);
+
+//gulp.task('default', ['copy-html'], bundle);
 
 
 ///before hand
-gulp.task('typescript', function() {
-    return tsProject.src()
-        .pipe(tsProject())
-        .pipe(gulp.dest(destination.js))
-});
+
 gulp.task('browserSync', function() {
     browserSync.init({
         server: {
             baseDir: 'dist'
         }
     });
+});
+
+gulp.task('bundle', function() {
+    return browserify({
+            baseDir: './app',
+            debug: true,
+            entries: ['app/ts/main.ts'],
+            cache: {},
+            packageCache: {}
+        })
+        .plugin(tsify)
+        .transform('babelify', {
+            presets: ['es2015'],
+            extensions: ['.ts']
+        })
+        .bundle()
+        .pipe(source('bundle.js'))
+        .pipe(buffer())
+        .pipe(sourcemaps.init({ loadMaps: true }))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest(destination.js))
+        .pipe(browserSync.reload({
+            stream: true
+        }));
 });
 
 gulp.task('sass', function() {
@@ -94,10 +96,10 @@ gulp.task('pug', function() {
 });
 
 
-gulp.task('watch', ['browserSync', 'sass', 'pug', 'typescript'], function() {
+gulp.task('watch', ['browserSync', 'sass', 'pug', 'bundle'], function() {
     gulp.watch('app/scss/**/*.scss', ['sass']);
     gulp.watch('app/**/*.pug', ['pug']);
-    gulp.watch('app/ts/**/*.ts', ['typescript']);
+    gulp.watch('app/ts/*.ts', ['bundle']);
 });
 
-// gulp.task('default', ['watch']);
+gulp.task('default', ['watch']);

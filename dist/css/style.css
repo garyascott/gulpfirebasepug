@@ -7,3 +7,5 @@ h1 {
 p {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 16px; }
+  p span {
+    display: block; }
