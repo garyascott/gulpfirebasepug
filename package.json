@@ -22,6 +22,7 @@
     "gulp-typescript": "^3.2.4",
     "gulp-uglify": "^3.0.0",
     "gulp-util": "^3.0.8",
+    "gulp-webstandards": "^0.1.1",
     "tsify": "^3.0.4",
     "typescript": "^2.7.1",
     "vinyl-buffer": "^1.0.1",

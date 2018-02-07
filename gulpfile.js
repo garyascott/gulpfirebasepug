@@ -15,7 +15,8 @@ var uglify = require('gulp-uglify'); // this is for compressing js
 // vinyl-buffer and gulp-sourcemaps to keep sourcemaps working
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
-
+//webstandards
+var webstandards = require('gulp-webstandards');
 
 var paths = {
     pages: ['app/*.html']
@@ -29,6 +30,11 @@ var destination = {
     'js': distFolder + '/scripts'
 
 };
+
+gulp.task('webstandards', function() {
+    return gulp.src(distFolder + '/**/*')
+        .pipe(webstandards());
+});
 
 gulp.task('copy-html', function() { //just copying html and adding them to the dest folder
     return gulp.src(paths.pages)
