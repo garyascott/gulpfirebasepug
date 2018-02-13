@@ -60,7 +60,7 @@ gulp.task('bundle', function() {
     return browserify({
             baseDir: './app',
             debug: true,
-            entries: ['app/ts/main.ts'],
+            entries: ['app/ts/vimeoEvent.ts'],
             cache: {},
             packageCache: {}
         })
@@ -73,7 +73,7 @@ gulp.task('bundle', function() {
         .pipe(source('bundle.js'))
         .pipe(buffer())
         .pipe(sourcemaps.init({ loadMaps: true }))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest(destination.js))
         .pipe(browserSync.reload({

@@ -1,2 +1,34 @@
-!function e(r,t,n){function o(i,f){if(!t[i]){if(!r[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var l=new Error("Cannot find module '"+i+"'");throw l.code="MODULE_NOT_FOUND",l}var a=t[i]={exports:{}};r[i][0].call(a.exports,function(e){var t=r[i][1][e];return o(t||e)},a,a.exports,e,r,t,n)}return t[i].exports}for(var u="function"==typeof require&&require,i=0;i<n.length;i++)o(n[i]);return o}({1:[function(e,r,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.sayHello=function(e){return"Hello from the how are you "+e}},{}],2:[function(e,r,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var n,o,u=e("./greet");n="greeting",o="Typescript",document.getElementById(n).innerText=u.sayHello(o)},{"./greet":1}]},{},[2]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
+//google tag manager
+//if iframe appears on page
+//loop through iframes an each one that contains player.vimeo add ga click event 
+var iframeElement = document.getElementsByTagName('iframe'),
+    iframeElementLength = iframeElement.length,
+    iframeCurrent = void 0,
+    parentP = void 0;
+var vimeoplayer = 'player.vimeo';
+var pageURL = window.location.href;
+if (iframeElementLength > 0) {
+    for (var i = 0; i < iframeElementLength; i++) {
+        iframeCurrent = iframeElement[i];
+        parentP = iframeCurrent.parentElement;
+        console.log(i + ' ' + iframeCurrent + ' ' + parentP);
+        var attrCreation = function attrCreation(domevent) {
+            parentP.setAttribute(domevent, 'ga(\u2018send\u2019, \u2018event\u2019, \u2018Vimeo Video Played\u2019, \u2018Played Video\u2019, \u2018' + iframeCurrent.getAttribute('src') + '\u2019, \u2018' + pageURL + '\u2019);');
+        };
+        if (iframeCurrent.getAttribute('src').includes(vimeoplayer)) {
+            console.log(iframeCurrent);
+            iframeCurrent.setAttribute("class", 'vimeoVideo');
+            attrCreation('onkeydown');
+            attrCreation('onclick');
+            attrCreation('ontouchstart');
+        }
+    }
+}
+// window.onload = function () {}
+
+},{}]},{},[1])
+
 //# sourceMappingURL=bundle.js.map

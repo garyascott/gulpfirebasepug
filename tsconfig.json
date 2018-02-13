@@ -1,7 +1,8 @@
 {
     "files": [
         "app/ts/main.ts",
-        "app/ts/greet.ts"
+        "app/ts/greet.ts",
+        "app/ts/vimeoEvent.ts"
     ],
     "compilerOptions": {
         "noImplicitAny": true,
